@@ -2,12 +2,20 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
 
 func main() {
+	defer func() {
+		r := recover()
+		if r != nil {
+			log.Println("panic happen:", r)
+			return
+		}
+	}()
 	r := mux.NewRouter()
 
 	r.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -25,5 +33,7 @@ func main() {
 		fmt.Fprintf(w, "<h1>Hello, %s!\n</h1>", title)
 	})
 
-	http.ListenAndServe(":8008", r)
+	port := "8008"
+	fmt.Println("server run at: http://127.0.0.1:" + port)
+	http.ListenAndServe(":"+port, r)
 }
